@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Cane Planting Indent — Field Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:       #1a6b3c;
+    --green-mid:   #2d8a54;
+    --green-light: #e8f5ee;
+    --green-pale:  #f3faf6;
+    --accent:      #f5a623;
+    --accent-soft: #fff7e6;
+    --red:         #e53935;
+    --text:        #1a2e22;
+    --muted:       #6b7e72;
+    --border:      #c8dfd1;
+    --card-bg:     #ffffff;
+    --radius:      14px;
+    --shadow:      0 2px 16px rgba(26,107,60,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--green-pale);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+    padding: 20px 16px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -20px;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .header-logo {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .section-label {
+    font-family: 'Baloo 2', cursive;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    padding: 20px 16px 8px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    margin: 0 12px 12px;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Required asterisk styling */
+  label .req {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px rgba(45,138,84,0.12);
+  }
+  input.autofilled {
+    background: var(--green-light);
+    border-color: var(--green-mid);
+    color: var(--green);
+    font-weight: 600;
+  }
+  input.autofilled:focus {
+    background: #fff;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* Error state for mandatory fields */
+  input.field-error {
+    border-color: var(--red) !important;
+    background: #fff5f5;
+    box-shadow: 0 0 0 3px rgba(229,57,53,0.12);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7e72' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  .farmer-card {
+    background: var(--card-bg);
+    margin: 0 12px 10px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .farmer-header {
+    background: linear-gradient(90deg, var(--green-light), #fff);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .farmer-number {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .farmer-number span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .farmer-name-preview {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ccc;
+    font-size: 18px;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .delete-btn:hover { color: var(--red); }
+
+  .farmer-body { padding: 14px 16px; }
+
+  .village-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+
+  .divider {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 0 12px;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .btn-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 24px);
+    margin: 4px 12px 0;
+    padding: 14px;
+    background: var(--accent-soft);
+    color: #b07000;
+    border: 2px dashed var(--accent);
+    border-radius: var(--radius);
+    font-family: 'Baloo 2', cursive;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-add:hover {
+    background: var(--accent);
+    color: #fff;
+    border-style: solid;
+  }
+  .btn-add .icon { font-size: 20px; }
+
+  .btn-submit {
+    display: block;
+    width: calc(100% - 24px);
+    margin: 16px 12px 0;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Baloo 2', cursive;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(26,107,60,0.3);
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,107,60,0.4);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  .counter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 12px 4px;
+    padding: 10px 14px;
+    background: var(--green);
+    border-radius: 10px;
+    color: #fff;
+  }
+  .counter-bar .count {
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .counter-bar .label { font-size: 12px; opacity: 0.8; }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+    z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+  }
+  .success-screen .icon { font-size: 64px; margin-bottom: 16px; }
+  .success-screen h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+  .success-screen p { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+  .btn-new {
+    display: inline-block;
+    padding: 14px 32px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Baloo 2', cursive;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .autofill-hint {
+    font-size: 11px;
+    color: var(--green-mid);
+    font-weight: 600;
+    margin-top: 4px;
+    display: none;
+  }
+  .autofill-hint.visible { display: block; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">🌾</div>
+  <h1>Cane Planting Indent</h1>
+  <p>Dalmia Bharat Sugar — Field Entry Form</p>
+</div>
+
+<!-- Main Form -->
+<div id="mainForm">
+
+  <!-- Meeting Details -->
+  <div class="section-label">📋 Meeting Details</div>
+  <div class="card">
+    <div class="field">
+      <label>Staff Name</label>
+      <input type="text" id="staffName" placeholder="Enter your name">
+    </div>
+    <div class="row-2">
+      <div class="field">
+        <label>Meeting Date</label>
+        <input type="date" id="meetingDate">
+      </div>
+      <div class="field">
+        <label>Zone / Circle</label>
+        <input type="text" id="zone" placeholder="Zone name">
+      </div>
+    </div>
+  </div>
+
+  <!-- Farmer Counter -->
+  <div class="section-label">👨‍🌾 Farmer Entries</div>
+  <div class="counter-bar">
+    <div>
+      <div class="count" id="farmerCount">0</div>
+      <div class="label">Farmers Added</div>
+    </div>
+    <div style="font-size:11px;opacity:0.8;text-align:right;">
+      Village auto-fills<br>from last entry
+    </div>
+  </div>
+
+  <!-- Farmer Cards Container -->
+  <div id="farmersContainer"></div>
+
+  <!-- Add Farmer Button -->
+  <button class="btn-add" onclick="addFarmer()">
+    <span class="icon">＋</span> Add Farmer Entry
+  </button>
+
+  <!-- Meeting Summary Fields -->
+  <div class="section-label">📝 Meeting Summary</div>
+  <div class="card">
+    <div class="field">
+      <label>Senior Person Present</label>
+      <input type="text" id="seniorPerson" placeholder="Name &amp; designation">
+    </div>
+    <div class="field">
+      <label>Total No. of Farmers Present</label>
+      <input type="number" id="totalNoOfFarmersPresent" placeholder="0" min="0">
+    </div>
+    <div class="field">
+      <label>Problems Faced by Farmers</label>
+      <textarea id="problemsFacedByFarmers" placeholder="Describe any problems raised by farmers…" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:Nunito,sans-serif;font-size:15px;color:var(--text);background:#fff;resize:vertical;min-height:90px;transition:border-color 0.2s,box-shadow 0.2s;"></textarea>
+    </div>
+    <div class="divider">Indent Period</div>
+    <div class="row-2">
+      <div class="field">
+        <label>Indent On Date (Ha) <span class="req">*</span></label>
+        <input type="number" id="indentOnDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+      <div class="field">
+        <label>Indent To Date (Ha) <span class="req">*</span></label>
+        <input type="number" id="indentToDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+    </div>
+    <div class="divider">Seed Distribution</div>
+    <div class="row-2">
+      <div class="field">
+        <label>Seed Distribution On Date (Qtl) <span class="req">*</span></label>
+        <input type="number" id="seedDistOnDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+      <div class="field">
+        <label>Seed Distribution To Date (Qtl) <span class="req">*</span></label>
+        <input type="number" id="seedDistToDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+    </div>
+    <div class="divider">Demo Plots</div>
+    <div class="field">
+      <label>Demo Plots To Date <span class="req">*</span></label>
+      <input type="number" id="demoPlotsToDate" placeholder="0" min="0"
+        oninput="clearError(this)">
+    </div>
+    <div class="divider">Planting Period</div>
+    <div class="row-2">
+      <div class="field">
+        <label>Planting On Date (Ha) <span class="req">*</span></label>
+        <input type="number" id="plantingOnDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+      <div class="field">
+        <label>Planting To Date (Ha) <span class="req">*</span></label>
+        <input type="number" id="plantingToDate" placeholder="0" min="0"
+          oninput="clearError(this)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="btn-submit" onclick="submitAll()">
+    ✅ Submit All Entries
+  </button>
+
+</div>
+
+<!-- Success Screen -->
+<div class="success-screen" id="successScreen">
+  <div class="icon">🎉</div>
+  <h2>Submitted!</h2>
+  <p id="successMsg">All entries have been saved successfully.</p>
+  <button class="btn-new" onclick="resetForm()">Start New Meeting</button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  let farmerCount = 0;
+  let lastVillage = '';
+
+  document.getElementById('meetingDate').valueAsDate = new Date();
+
+  function clearError(input) {
+    input.classList.remove('field-error');
+  }
+
+  function markError(id) {
+    const el = document.getElementById(id);
+    el.classList.add('field-error');
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.focus();
+  }
+
+  function addFarmer() {
+    farmerCount++;
+    const container = document.getElementById('farmersContainer');
+    const id = farmerCount;
+
+    const card = document.createElement('div');
+    card.className = 'farmer-card';
+    card.id = `farmer-${id}`;
+
+    const isAutofilled = lastVillage !== '';
+    const villageValue = lastVillage;
+
+    card.innerHTML = `
+      <div class="farmer-header">
+        <div class="farmer-number">
+          #${id} <span id="preview-${id}">—</span>
+        </div>
+        <button class="delete-btn" onclick="removeFarmer(${id})" title="Remove">✕</button>
+      </div>
+      <div class="farmer-body">
+
+        <div class="field">
+          <label>Farmer Name *</label>
+          <input type="text" id="f${id}_name" placeholder="Full name"
+            oninput="updatePreview(${id})">
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Father / Husband</label>
+            <input type="text" id="f${id}_father" placeholder="Name">
+          </div>
+          <div class="field">
+            <label>UGC / Plot No.</label>
+            <input type="text" id="f${id}_plot" placeholder="Plot no.">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Village *</label>
+          <input type="text" id="f${id}_village"
+            value="${villageValue}"
+            class="${isAutofilled ? 'autofilled' : ''}"
+            placeholder="Village name"
+            oninput="onVillageChange(${id})">
+          <div class="autofill-hint ${isAutofilled ? 'visible' : ''}" id="hint-${id}">
+            ✦ Auto-filled from previous entry — edit if different
+          </div>
+        </div>
+
+        <div class="divider">Variety & Area</div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Seed Variety *</label>
+            <select id="f${id}_variety">
+              <option value="">— Select —</option>
+              <option>Co-0238</option>
+              <option>Co-0118</option>
+              <option>Co Lk 94184</option>
+              <option>Co-98014</option>
+              <option>CoS-13235</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Indent Date</label>
+            <input type="date" id="f${id}_indentDate">
+          </div>
+        </div>
+
+        <div class="row-3">
+          <div class="field">
+            <label>Total CLA (Ha)</label>
+            <input type="number" id="f${id}_cla" placeholder="0.0" step="0.1" min="0"
+              oninput="autoCalc(${id})">
+          </div>
+          <div class="field">
+            <label>Wheat Area (Ha)</label>
+            <input type="number" id="f${id}_wheat" placeholder="0.0" step="0.1" min="0"
+              oninput="autoCalc(${id})">
+          </div>
+          <div class="field">
+            <label>Other Crop (Ha)</label>
+            <input type="number" id="f${id}_other" placeholder="0.0" step="0.1" min="0"
+              oninput="autoCalc(${id})">
+          </div>
+        </div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Net Planting (Ha)</label>
+            <input type="number" id="f${id}_net" placeholder="Auto" step="0.1"
+              style="background:#f0f0f0;color:#888;" readonly>
+          </div>
+          <div class="field">
+            <label>Expected Planting</label>
+            <input type="date" id="f${id}_expDate">
+          </div>
+        </div>
+
+        <div class="divider">Seed Quantities</div>
+
+        <div class="row-3">
+          <div class="field">
+            <label>Seed Req. (Qtl)</label>
+            <input type="number" id="f${id}_seedReq" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Own Seed (Qtl)</label>
+            <input type="number" id="f${id}_ownSeed" placeholder="0" min="0">
+          </div>
+          <div class="field">
+            <label>Mill Supply (Qtl)</label>
+            <input type="number" id="f${id}_millSeed" placeholder="0" min="0">
+          </div>
+        </div>
+
+        <div class="divider">Planting History</div>
+
+        <div class="row-2">
+          <div class="field">
+            <label>Last Year Planting Area (Ha)</label>
+            <input type="number" id="f${id}_lastYrArea" placeholder="0.0" step="0.1" min="0">
+          </div>
+          <div class="field">
+            <label>Current Year Planting Area (Ha)</label>
+            <input type="number" id="f${id}_currYrArea" placeholder="0.0" step="0.1" min="0">
+          </div>
+        </div>
+
+      </div>
+    `;
+
+    container.appendChild(card);
+    updateCounter();
+
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
+    setTimeout(() => {
+      document.getElementById(`f${id}_name`).focus();
+    }, 350);
+  }
+
+  function onVillageChange(id) {
+    const input = document.getElementById(`f${id}_village`);
+    const val = input.value.trim();
+    input.classList.remove('autofilled');
+    document.getElementById(`hint-${id}`).classList.remove('visible');
+    if (val) lastVillage = val;
+  }
+
+  function updatePreview(id) {
+    const name = document.getElementById(`f${id}_name`).value.trim();
+    document.getElementById(`preview-${id}`).textContent = name || '—';
+  }
+
+  function autoCalc(id) {
+    const cla   = parseFloat(document.getElementById(`f${id}_cla`).value)   || 0;
+    const wheat = parseFloat(document.getElementById(`f${id}_wheat`).value) || 0;
+    const other = parseFloat(document.getElementById(`f${id}_other`).value) || 0;
+    const net = Math.max(0, cla - wheat - other);
+    const netField = document.getElementById(`f${id}_net`);
+    netField.value = net > 0 ? net.toFixed(1) : '';
+  }
+
+  function removeFarmer(id) {
+    const card = document.getElementById(`farmer-${id}`);
+    card.style.opacity = '0';
+    card.style.transform = 'scale(0.95)';
+    card.style.transition = 'all 0.2s';
+    setTimeout(() => {
+      card.remove();
+      updateCounter();
+    }, 200);
+  }
+
+  function updateCounter() {
+    const cards = document.querySelectorAll('.farmer-card');
+    document.getElementById('farmerCount').textContent = cards.length;
+  }
+
+  function showToast(msg, duration = 2500) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), duration);
+  }
+
+  function submitAll() {
+    // Validate meeting fields
+    const staffName   = document.getElementById('staffName').value.trim();
+    const meetingDate = document.getElementById('meetingDate').value;
+
+    if (!staffName)   { showToast('⚠️ Please enter Staff Name'); return; }
+    if (!meetingDate) { showToast('⚠️ Please enter Meeting Date'); return; }
+
+    // ── Validate mandatory Meeting Summary fields ──────────────────────
+    const indentOnDate    = document.getElementById('indentOnDate').value.trim();
+    const indentToDate    = document.getElementById('indentToDate').value.trim();
+    const seedDistOnDate  = document.getElementById('seedDistOnDate').value.trim();
+    const seedDistToDate  = document.getElementById('seedDistToDate').value.trim();
+    const demoPlotsToDate = document.getElementById('demoPlotsToDate').value.trim();
+
+    if (!indentOnDate) {
+      showToast('⚠️ Indent On Date is required');
+      markError('indentOnDate');
+      return;
+    }
+    if (!indentToDate) {
+      showToast('⚠️ Indent To Date is required');
+      markError('indentToDate');
+      return;
+    }
+    if (!seedDistOnDate) {
+      showToast('⚠️ Seed Distribution On Date is required');
+      markError('seedDistOnDate');
+      return;
+    }
+    if (!seedDistToDate) {
+      showToast('⚠️ Seed Distribution To Date is required');
+      markError('seedDistToDate');
+      return;
+    }
+    if (!demoPlotsToDate) {
+      showToast('⚠️ Demo Plots To Date is required');
+      markError('demoPlotsToDate');
+      return;
+    }
+
+    const plantingOnDate  = document.getElementById('plantingOnDate').value.trim();
+    const plantingToDate  = document.getElementById('plantingToDate').value.trim();
+
+    if (!plantingOnDate) {
+      showToast('⚠️ Planting On Date is required');
+      markError('plantingOnDate');
+      return;
+    }
+    if (!plantingToDate) {
+      showToast('⚠️ Planting To Date is required');
+      markError('plantingToDate');
+      return;
+    }
+    // ──────────────────────────────────────────────────────────────────
+
+    const cards = document.querySelectorAll('.farmer-card');
+    if (cards.length === 0) {
+      showToast('⚠️ Add at least one farmer entry');
+      return;
+    }
+
+    // Validate & collect farmer data
+    const entries = [];
+    let hasError = false;
+
+    cards.forEach(card => {
+      const id = card.id.replace('farmer-', '');
+      const name    = document.getElementById(`f${id}_name`).value.trim();
+      const village = document.getElementById(`f${id}_village`).value.trim();
+      const variety = document.getElementById(`f${id}_variety`).value;
+
+      if (!name || !village || !variety) {
+        hasError = true;
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.border = '2px solid #e53935';
+        setTimeout(() => card.style.border = '1.5px solid var(--border)', 2000);
+        return;
+      }
+
+      entries.push({
+        staffName,
+        meetingDate,
+        zone:           document.getElementById('zone').value.trim(),
+        farmerName:     name,
+        father:         document.getElementById(`f${id}_father`).value.trim(),
+        village,
+        plot:           document.getElementById(`f${id}_plot`).value.trim(),
+        variety,
+        indentDate:     document.getElementById(`f${id}_indentDate`).value,
+        cla:            document.getElementById(`f${id}_cla`).value,
+        wheat:          document.getElementById(`f${id}_wheat`).value,
+        other:          document.getElementById(`f${id}_other`).value,
+        net:            document.getElementById(`f${id}_net`).value,
+        expDate:        document.getElementById(`f${id}_expDate`).value,
+        seedReq:        document.getElementById(`f${id}_seedReq`).value,
+        ownSeed:        document.getElementById(`f${id}_ownSeed`).value,
+        millSeed:       document.getElementById(`f${id}_millSeed`).value,
+        lastYrArea:     document.getElementById(`f${id}_lastYrArea`).value,
+        currYrArea:     document.getElementById(`f${id}_currYrArea`).value,
+        seniorPerson:   document.getElementById('seniorPerson').value.trim(),
+        indentOnDate,
+        indentToDate,
+        seedDistOnDate,
+        seedDistToDate,
+        demoPlotsToDate,
+        plantingOnDate,
+        plantingToDate,
+        totalNoOfFarmersPresent:   document.getElementById('totalNoOfFarmersPresent').value,
+        problemsFacedByFarmers:  document.getElementById('problemsFacedByFarmers').value.trim(),
+      });
+    });
+
+    if (hasError) {
+      showToast('⚠️ Fill required fields: Name, Village, Variety');
+      return;
+    }
+
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyI0oFlBAE9EoPqLalYJK3jYcKUy0Zk_JEXUIGsZAFY_xs3cN5B4oMR-sZVfA_r1h8P/exec';
+
+    showToast('⏳ Submitting…', 5000);
+
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entries })
+    })
+    .then(() => showSuccess(entries.length))
+    .catch(() => {
+      const saved = JSON.parse(localStorage.getItem('pendingEntries') || '[]');
+      saved.push(...entries);
+      localStorage.setItem('pendingEntries', JSON.stringify(saved));
+      showToast('📵 Saved offline — will sync when connected', 4000);
+      setTimeout(() => showSuccess(entries.length), 2000);
+    });
+  }
+
+  function showSuccess(count) {
+    document.getElementById('mainForm').style.display = 'none';
+    const s = document.getElementById('successScreen');
+    s.style.display = 'block';
+    document.getElementById('successMsg').textContent =
+      `${count} farmer ${count === 1 ? 'entry' : 'entries'} submitted successfully.`;
+  }
+
+  function resetForm() {
+    farmerCount = 0;
+    lastVillage = '';
+    document.getElementById('farmersContainer').innerHTML = '';
+    document.getElementById('staffName').value = '';
+    document.getElementById('zone').value = '';
+    document.getElementById('meetingDate').valueAsDate = new Date();
+    document.getElementById('seniorPerson').value = '';
+    document.getElementById('indentOnDate').value = '';
+    document.getElementById('indentToDate').value = '';
+    document.getElementById('seedDistOnDate').value = '';
+    document.getElementById('seedDistToDate').value = '';
+    document.getElementById('demoPlotsToDate').value = '';
+    document.getElementById('plantingOnDate').value = '';
+    document.getElementById('plantingToDate').value = '';
+    document.getElementById('totalNoOfFarmersPresent').value = '';
+    document.getElementById('problemsFacedByFarmers').value = '';
+    document.getElementById('mainForm').style.display = 'block';
+    document.getElementById('successScreen').style.display = 'none';
+    updateCounter();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.onload = () => addFarmer();
+</script>
+</body>
+</html>
